@@ -10,31 +10,36 @@
 
 #include <pthread.h>
 #include <queue>
-#include <fft.h>
-#include <complex.h>
-#include <adc.h>
+#include <miosix/_examples/context_aware/adc.h>
 #include <cstdio>
 #include <inttypes.h>
-
-
-//#define uint8_t unsigned char
-//#define uint16_t unsigned short
+#include <SignalProcessingAlgorithm.h>
 
 using namespace std;
 using namespace miosix;
 
-const uint16_t SAMPLES = 512;
+typedef Gpio<GPIOB_BASE,0> adcIn;
+
+const unsigned short SAMPLES = 512;
 
 class light_aware {
 public:
  
     light_aware();
     
-    //virtual ~light_aware();
+    ~light_aware();
     
+    /**
+     * Says if is an indoor or outdoor environment
+     * @return true : outdoor, false : indoor
+     */
     bool isOutdoor();
     
-    uint16_t lightLevel();
+    /**
+     * Says the current light intensity
+     * @return light intensity
+     */
+    unsigned short lightLevel();
     
 protected:
     
@@ -64,9 +69,9 @@ private:
     
     pthread_t consumer, producer;
     
-    CFFT fft;
+    SignalProcessing algorithm;
     
-    queue<complex> Queue;
+    queue<double> Queue;
     
     bool isOutside;
     

@@ -22,17 +22,20 @@ light_aware::light_aware():adc(1){
     adc.nbrOfConversion(1);
     
     adc.init();
-    
     adc.regularChannelConfig(Channel::Channel_8, 1, SampleTime::Cycles3);
     
-    pthread_create( &producer, NULL, &light_aware::pushADCValueHelper, NULL);
-    pthread_create( &consumer, NULL, &light_aware::popToFFTHelper, NULL);
+    pthread_create( &producer, NULL, &light_aware::pushADCValueHelper, this);
+    pthread_create( &consumer, NULL, &light_aware::popToFFTHelper, this);
+}
+
+light_aware::~light_aware(){
+    
 }
 
 void *light_aware::popToFFT(void){
     
-    uint16_t samples = 0;
-    complex f[SAMPLES];
+    unsigned short samples = 0;
+    double *f = new double[SAMPLES];
     
     for(;;){
         
@@ -49,18 +52,13 @@ void *light_aware::popToFFT(void){
     
          if(samples == SAMPLES){
              
-             fft.Forward(f, SAMPLES);
              
-             /*printf("real value: %f, imag value : %f, sum abs: %"PRIu32", magnitude: %"PRIu16"\n", \
-                     fft.realValue(), fft.imagValue(), fft.sum_abs(), fft.magnitude());*/
-             
-             if(f[(uint16_t)SAMPLES/2].norm() > 10000 && \
-                     f[(uint16_t)SAMPLES/2].norm() > fft.Avg(f, SAMPLES)){
+             if(algorithm.ProcessData(f, SAMPLES))
                  setIsOutside(false);
-             }
-             else{
+             else
                  setIsOutside(true);
-             }        
+      
+                  
              
              samples = 0;
          }
@@ -71,7 +69,7 @@ void *light_aware::popToFFT(void){
 
 void *light_aware::pushADCValue(void){
     
-    complex temp;
+    double temp;
     
     for(;;){
         
@@ -84,13 +82,11 @@ void *light_aware::pushADCValue(void){
         
         Queue.push(temp);
         
-        //printf("ADC value: %"PRIu16"\n", Queue.back());
-        
         pthread_cond_broadcast(&cond);
         
         pthread_mutex_unlock(&mutexQueue);
         
-        usleep(5*1000);
+        usleep(25*100);
     }
     
     return 0;
@@ -111,9 +107,12 @@ void light_aware::getIsOutside(bool *value){
 }
 
 bool light_aware::isOutdoor(){
-    bool *result = NULL;
     
-    getIsOutside(result);
+    bool temp;
     
-    return *result;
+    pthread_mutex_lock(&mutexIsOutside);
+    temp = isOutside;
+    pthread_mutex_unlock(&mutexIsOutside);
+    
+    return temp;
 }
