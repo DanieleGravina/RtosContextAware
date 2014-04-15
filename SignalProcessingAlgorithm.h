@@ -8,8 +8,6 @@
 #ifndef SIGNALPROCESSINGALGORITHM_H
 #define	SIGNALPROCESSINGALGORITHM_H
 
-#include <fft.h>
-#include <complex.h>
 #include <cstdio>
 
 const int INDEX = 102;
@@ -22,10 +20,8 @@ public:
      * @param N
      * @return true if the algorithm has detect an indoor environment, otherwise return false.
      */
-    bool ProcessData(double *const Data, const unsigned short N);
+    virtual bool ProcessData(double *const Data, const unsigned short N);
     
-private:
-    CFFT fft;
 };
 
 #endif	/* SIGNALPROCESSINGALGORITHM_H */
