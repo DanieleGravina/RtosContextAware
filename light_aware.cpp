@@ -1,13 +1,10 @@
 #include <light_aware.h>
 
-light_aware::light_aware():adc(1){ 
+light_aware::light_aware():adc(1), isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
+        mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER)
+{ 
     
-    isOutside = false;
-    
-    //initalize mutex
-    mutexQueue = PTHREAD_MUTEX_INITIALIZER;
-    mutexIsOutside = PTHREAD_MUTEX_INITIALIZER;
-    cond = PTHREAD_COND_INITIALIZER;
+    a_samples = new double[SAMPLES];
     
     //initialize adc
     adcIn::mode(Mode::INPUT_ANALOG); //configurazione ingresso analog
@@ -35,7 +32,6 @@ light_aware::~light_aware(){
 void *light_aware::popToFFT(void){
     
     unsigned short samples = 0;
-    double *f = new double[SAMPLES];
     
     for(;;){
         
@@ -43,7 +39,7 @@ void *light_aware::popToFFT(void){
          
          while(Queue.empty()) pthread_cond_wait(&cond, &mutexQueue);
          
-         f[samples] = Queue.front();
+         a_samples[samples] = Queue.front();
          Queue.pop();
          
          pthread_mutex_unlock(&mutexQueue);
@@ -53,7 +49,7 @@ void *light_aware::popToFFT(void){
          if(samples == SAMPLES){
              
              
-             if(algorithm.ProcessData(f, SAMPLES))
+             if(algorithm.ProcessData(a_samples, SAMPLES))
                  setIsOutside(false);
              else
                  setIsOutside(true);

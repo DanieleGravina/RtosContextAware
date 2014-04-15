@@ -80,6 +80,10 @@ private:
     pthread_mutex_t mutexIsOutside;
     
     pthread_cond_t cond; 
+    
+    double *a_samples;
+    
+    const light_aware& operator= ( const light_aware& other );
         
 };
 
