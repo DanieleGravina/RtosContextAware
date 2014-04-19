@@ -10,8 +10,6 @@
 
 #include <cstdio>
 
-const int INDEX = 102;
-
 class SignalProcessing{
 public:
     /**

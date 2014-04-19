@@ -12,6 +12,8 @@
 #include <complex.h>
 #include <SignalProcessingAlgorithm.h>
 
+const int INDEX = 102;
+
 class FFTAlgorithm : public SignalProcessing{
 public:
     

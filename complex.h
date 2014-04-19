@@ -1,13 +1,9 @@
-//   complex.h - declaration of class
-//   of complex number
-//
-//   The code is property of LIBROW
-//   You can use it on your own
-//   When utilizing credit LIBROW site
-
 #ifndef _COMPLEX_H_
 #define _COMPLEX_H_
 
+/**
+ * Complex number class
+ */
 class complex
 {
 protected:
@@ -20,12 +16,18 @@ public:
 	static const complex i;
 	static const complex j;
 
-	//   Constructors
+	/**
+         * Constructors
+         */
 	complex(): m_re(0.), m_im(0.) {}
 	complex(double re, double im): m_re(re), m_im(im) {}
 	complex(double val): m_re(val), m_im(0.) {}
 
-	//   Assignment
+	/**
+         * Assignment operator ovverride
+         * @param val
+         * @return 
+         */
 	complex& operator= (const double val)
 	{
 		m_re = val;
@@ -33,23 +35,36 @@ public:
 		return *this;
 	}
 
-	//   Basic operations - taking parts
+	/**
+         * Getters
+         * @return 
+         */
 	double re() const { return m_re; }
 	double im() const { return m_im; }
 
-	//   Conjugate number
+	/**
+         * Conjugate getter
+         * @return 
+         */
 	complex conjugate() const
 	{
 		return complex(m_re, -m_im);
 	}
 
-	//   Norm   
+	/**
+         * Norm
+         * @return 
+         */
 	double norm() const
 	{
 		return m_re * m_re + m_im * m_im;
 	}
 
-	//   Arithmetic operations
+	/**
+         * Mathematic operation ovverride
+         * @param other
+         * @return 
+         */
 	complex operator+ (const complex& other) const
 	{
 		return complex(m_re + other.m_re, m_im + other.m_im);
@@ -198,7 +213,11 @@ public:
 			-left * right.m_im / denominator);
 	}
 
-	//   Boolean operators
+	/**
+         * Boolean operators
+         * @param other
+         * @return 
+         */
 	bool operator== (const complex &other) const
 	{
 		return m_re == other.m_re && m_im == other.m_im;
