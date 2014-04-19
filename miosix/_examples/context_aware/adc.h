@@ -319,22 +319,30 @@ public :
     }
     
     /**
-     * Initialize the ADC : all parameters must be set, otherwise will not do anything
+     * Initialize the ADC : all parameters must be set, otherwise will use default settings
      */
     void init(){
         
-        if(initStatus == 7){
-            
-            iprintf("init\n");
-            
-            deInit();
-
-            CR1Impl(ADCx, _resolution, _scanConvMode);
-            CR2Impl(ADCx, _continuosConvMode, _trigger, _externalConvEdge, _align);
-            SQR1Impl(ADCx, _nbrOfConversion);
-
-            enable(ADCx);
+        /**
+         * if not initiliazed, use default setting
+         */
+        if(initStatus != 7){
+            scanConvMode(DISABLE);
+            continuousConvMode(DISABLE);
+            externalTrigConv(ExternalTrigConv::T1_CC1);
+            externalTrigConvEdge(ExternalConvEdge::None);
+            resolution(Resolution::RES_12);
+            dataAlign(DataAlign::Right);
+            nbrOfConversion(1);
         }
+            
+        deInit();
+
+        CR1Impl(ADCx, _resolution, _scanConvMode);
+        CR2Impl(ADCx, _continuosConvMode, _trigger, _externalConvEdge, _align);
+        SQR1Impl(ADCx, _nbrOfConversion);
+
+        enable(ADCx);
         
     }
     
