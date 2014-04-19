@@ -18,7 +18,8 @@ typedef Gpio<GPIOB_BASE,0> adcIn;
 int main()
 {
   
-    light_aware light_awareness;
+    FFTAlgorithm algorithm;
+    light_aware light_awareness(algorithm);
     
     led1::mode(Mode::OUTPUT);
     led2::mode(Mode::OUTPUT);

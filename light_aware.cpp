@@ -1,6 +1,7 @@
 #include <light_aware.h>
 
-light_aware::light_aware():adc(1), isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
+light_aware::light_aware(SignalProcessing& algorithm):adc(1), _algorithm(algorithm), 
+        isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
         mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER)
 { 
     
@@ -27,6 +28,8 @@ light_aware::light_aware():adc(1), isOutside(false), mutexQueue(PTHREAD_MUTEX_IN
 
 light_aware::~light_aware(){
     
+    delete[] a_samples;
+    
 }
 
 void *light_aware::popToFFT(void){
@@ -49,7 +52,7 @@ void *light_aware::popToFFT(void){
          if(samples == SAMPLES){
              
              
-             if(algorithm.ProcessData(a_samples, SAMPLES))
+             if(_algorithm.ProcessData(a_samples, SAMPLES))
                  setIsOutside(false);
              else
                  setIsOutside(true);

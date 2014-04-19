@@ -14,6 +14,7 @@
 
 class FFTAlgorithm : public SignalProcessing{
 public:
+    
     /**
      * Get the N data from ADC and process the data with the choosen algorithm implementation
      * @param Data
@@ -25,7 +26,8 @@ public:
 private:
     
     CFFT fft;
-         
+    
+    complex *f;
     
 };
 

@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <inttypes.h>
 #include <SignalProcessingAlgorithm.h>
+#include <FFTAlgorithm.h>
 
 using namespace std;
 using namespace miosix;
@@ -25,7 +26,7 @@ const unsigned short SAMPLES = 512;
 class light_aware {
 public:
  
-    light_aware();
+    light_aware(SignalProcessing &algorithm);
     
     ~light_aware();
     
@@ -69,7 +70,7 @@ private:
     
     pthread_t consumer, producer;
     
-    SignalProcessing algorithm;
+    SignalProcessing& _algorithm;
     
     queue<double> Queue;
     
