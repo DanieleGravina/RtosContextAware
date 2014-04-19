@@ -14,7 +14,14 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp
+main.cpp                                \
+miosix/_examples/context_aware/adc.cpp  \
+fft.cpp                                 \
+complex.cpp                             \
+light_aware.cpp                         \
+SignalProcessingAlgorithm.cpp           \
+FFTAlgorithm.cpp			\
+goertzel_algorithm.cpp
 
 ##
 ## List here additional static libraries with relative path
