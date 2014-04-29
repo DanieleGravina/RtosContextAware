@@ -10,6 +10,12 @@
 
 #include <cstdio>
 
+/**
+ * Pure abstract class, to allow different implementation
+ * @param Data
+ * @param N
+ * @return 
+ */
 class SignalProcessing{
 public:
     /**
@@ -18,9 +24,13 @@ public:
      * @param N
      * @return true if the algorithm has detect an indoor environment, otherwise return false.
      */
-    virtual bool ProcessData(double *const Data, const unsigned short N);
+    virtual bool ProcessData(double *const Data, const unsigned short N) = 0;
+    
+    virtual  ~SignalProcessing() = 0;
     
 };
+
+SignalProcessing::~SignalProcessing(){};
 
 #endif	/* SIGNALPROCESSINGALGORITHM_H */
 
