@@ -19,7 +19,6 @@ miosix/_examples/context_aware/adc.cpp  \
 fft.cpp                                 \
 complex.cpp                             \
 light_aware.cpp                         \
-SignalProcessingAlgorithm.cpp           \
 FFTAlgorithm.cpp			\
 goertzel_algorithm.cpp
 

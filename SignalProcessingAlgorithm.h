@@ -26,11 +26,9 @@ public:
      */
     virtual bool ProcessData(double *const Data, const unsigned short N) = 0;
     
-    virtual  ~SignalProcessing() = 0;
+    virtual  ~SignalProcessing(){}
     
 };
-
-SignalProcessing::~SignalProcessing(){};
 
 #endif	/* SIGNALPROCESSINGALGORITHM_H */
 

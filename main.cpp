@@ -13,6 +13,8 @@ using namespace miosix;
 typedef Gpio<GPIOD_BASE,14> led1;
 typedef Gpio<GPIOD_BASE,15> led2;
 
+typedef Gpio<GPIOC_BASE,0> led3;
+
 typedef Gpio<GPIOB_BASE,0> adcIn;
 
 
