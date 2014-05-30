@@ -8,8 +8,6 @@
 #ifndef SIGNALPROCESSINGALGORITHM_H
 #define	SIGNALPROCESSINGALGORITHM_H
 
-#include <cstdio>
-
 /**
  * Pure abstract class, to allow different implementation
  * @param Data
@@ -25,6 +23,18 @@ public:
      * @return true if the algorithm has detect an indoor environment, otherwise return false.
      */
     virtual bool ProcessData(double *const Data, const unsigned short N) = 0;
+    
+    /**
+     * Get the number of samples needed for the algorithm
+     * @return num of samples
+     */
+    virtual unsigned int getNumOfSamples() = 0;
+    
+    /**
+     * Get the sample frequency of the algorithm
+     * @return sample frequency
+     */
+    virtual unsigned int getSampleFrequency() = 0;
     
     virtual  ~SignalProcessing(){}
     

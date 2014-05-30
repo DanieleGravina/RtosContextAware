@@ -5,7 +5,7 @@ bool FFTAlgorithm::ProcessData(double *const Data, const unsigned short N){
     
     bool result;
     
-    for (int i = 0; i < N; i++){
+    for (int i = 0; i < N; ++i){
         f[i] = Data[i];
     }
     
@@ -21,4 +21,12 @@ bool FFTAlgorithm::ProcessData(double *const Data, const unsigned short N){
     
     return result;
     
+}
+
+unsigned int FFTAlgorithm::getNumOfSamples(){
+    return SAMPLES;
+}
+    
+unsigned int FFTAlgorithm::getSampleFrequency(){
+    return FREQUENCY;
 }

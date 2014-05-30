@@ -21,12 +21,24 @@ using namespace miosix;
 
 typedef Gpio<GPIOB_BASE,0> adcIn;
 
-const unsigned short SAMPLES = 512;
+class ADCInit {
+public:
+    /**
+     * ADCInit( TIMER or NOT_TIMER)
+     */
+    enum ADCInit_
+    {
+        NO_TIMER = 0,
+        TIMER = 1
+    };
+private:
+    ADCInit(); //Just a wrapper class, disallow creating instances
+};
 
 class light_aware {
 public:
  
-    light_aware(SignalProcessing &algorithm);
+    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init);
     
     ~light_aware();
     
@@ -48,9 +60,15 @@ protected:
     
     void *popToFFT();
     
+    void *pushADCValueWithTimer();
+    
     static void *pushADCValueHelper(void *context)
     {
         return ((light_aware *)context)->pushADCValue();
+    }
+    
+    static void *pushADCValueWithTimerHelper(void *context){
+        return ((light_aware *)context)->pushADCValueWithTimer();
     }
     
     static void *popToFFTHelper(void *context)
@@ -58,11 +76,14 @@ protected:
         return ((light_aware *)context)->popToFFT();
     }
     
+    
     void setIsOutside(bool value);
     
     void getIsOutside(bool *value);
     
 private:
+    
+    void initADC(ADCInit::ADCInit_ type);
     
     Adc adc;
     
@@ -71,6 +92,9 @@ private:
     pthread_t consumer, producer;
     
     SignalProcessing& _algorithm;
+    
+    const unsigned int SAMPLES;
+    const unsigned int frequency;
     
     queue<double> Queue;
     

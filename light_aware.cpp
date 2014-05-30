@@ -1,29 +1,13 @@
 #include <light_aware.h>
 
-light_aware::light_aware(SignalProcessing& algorithm):adc(1), _algorithm(algorithm), 
+light_aware::light_aware(SignalProcessing& algorithm, ADCInit::ADCInit_ adc_init):
+        adc(1), _algorithm(algorithm), SAMPLES(algorithm.getNumOfSamples()),
+        frequency(algorithm.getSampleFrequency()),
         isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
         mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER)
 { 
     
     a_samples = new double[SAMPLES];
-    
-    //initialize adc
-    adcIn::mode(Mode::INPUT_ANALOG); //configurazione ingresso analog
-    RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; //clock gating
-    
-    adc.scanConvMode(DISABLE);
-    adc.continuousConvMode(DISABLE);
-    adc.externalTrigConv(ExternalTrigConv::T1_CC1);
-    adc.externalTrigConvEdge(ExternalConvEdge::None);
-    adc.resolution(Resolution::RES_12);
-    adc.dataAlign(DataAlign::Right);
-    adc.nbrOfConversion(1);
-    
-    adc.init();
-    adc.regularChannelConfig(Channel::Channel_8, 1, SampleTime::Cycles3);
-    
-    pthread_create( &producer, NULL, &light_aware::pushADCValueHelper, this);
-    pthread_create( &consumer, NULL, &light_aware::popToFFTHelper, this);
 }
 
 light_aware::~light_aware(){
@@ -32,9 +16,43 @@ light_aware::~light_aware(){
     
 }
 
+void light_aware::initADC(ADCInit::ADCInit_ type){
+    
+    //initialize adc
+    adcIn::mode(Mode::INPUT_ANALOG); //configurazione ingresso analog
+    RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; //clock gating
+    
+    adc.scanConvMode(DISABLE);
+    adc.continuousConvMode(DISABLE);
+    adc.externalTrigConv(ExternalTrigConv::T1_CC1);
+    adc.resolution(Resolution::RES_12);
+    adc.dataAlign(DataAlign::Right);
+    adc.nbrOfConversion(1);
+    
+    if(type == ADCInit::NO_TIMER){
+       adc.externalTrigConvEdge(ExternalConvEdge::None); 
+    }
+    else{
+        adc.externalTrigConvEdge(ExternalConvEdge::Rising);
+    }
+    
+    adc.init();
+    adc.regularChannelConfig(Channel::Channel_8, 1, SampleTime::Cycles3);
+    
+    if(type == ADCInit::NO_TIMER){
+        pthread_create( &producer, NULL, &light_aware::pushADCValueHelper, this);
+    }
+    else
+    {
+       pthread_create( &producer, NULL, &light_aware::pushADCValueWithTimerHelper, this); 
+    }
+    
+    pthread_create( &consumer, NULL, &light_aware::popToFFTHelper, this);
+}
+
 void *light_aware::popToFFT(void){
     
-    unsigned short samples = 0;
+    unsigned int samples = 0;
     
     for(;;){
         
@@ -89,6 +107,12 @@ void *light_aware::pushADCValue(void){
     }
     
     return 0;
+}
+
+void *light_aware::pushADCValueWithTimer(){
+    //TODO not implemented
+    printf("Error: push adc value with timer library not implemented\n");
+    pushADCValue();
 }
 
 void light_aware::setIsOutside(bool value){

@@ -47,3 +47,11 @@ bool GoertzelTransform::ProcessData(double *const Data, const unsigned short N){
         return result;
         
 }
+
+unsigned int GoertzelTransform::getNumOfSamples(){
+    return SAMPLES;
+}
+    
+unsigned int GoertzelTransform::getSampleFrequency(){
+    return FREQUENCY;
+}

@@ -21,7 +21,13 @@ using namespace std;
 class GoertzelTransform : public SignalProcessing{
 public :
     
+    GoertzelTransform(): SAMPLES(512), FREQUENCY(25*100){} 
+    
     bool ProcessData(double *const Data, const unsigned short N);
+    
+    unsigned int getNumOfSamples();
+
+    unsigned int getSampleFrequency();
     
 private:
     
@@ -48,6 +54,9 @@ private:
     double resultReal, resultImaginary;
     
     double *v;
+    
+    const unsigned int SAMPLES;
+    const unsigned int FREQUENCY;
 };
 
 
