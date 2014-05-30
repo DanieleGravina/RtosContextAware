@@ -14,22 +14,20 @@
 
 const int INDEX = 102; 
 
+/**
+ * class that implement pure virtual SignalProcessing
+ * using FFT algorithm
+ */
 class FFTAlgorithm : public SignalProcessing{
 public:
     
     FFTAlgorithm(): SAMPLES(512), FREQUENCY(25*100){}
     
-    /**
-     * Get the N data from ADC and process the data with the choosen algorithm implementation
-     * @param Data
-     * @param N
-     * @return true if the algorithm has detect an indoor environment, otherwise return false.
-     */
-     bool ProcessData(double *const Data, const unsigned short N);
-     
-     unsigned int getNumOfSamples();
-    
-     unsigned int getSampleFrequency();
+    bool ProcessData(double *const Data, const unsigned short N);
+
+    unsigned int getNumOfSamples();
+
+    unsigned int getSampleFrequency();
      
 private:
     

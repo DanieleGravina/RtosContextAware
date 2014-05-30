@@ -21,6 +21,9 @@ using namespace miosix;
 
 typedef Gpio<GPIOB_BASE,0> adcIn;
 
+/**
+ * Enum to set if it get sample with timer or not
+ */
 class ADCInit {
 public:
     /**
@@ -35,6 +38,13 @@ private:
     ADCInit(); //Just a wrapper class, disallow creating instances
 };
 
+/**
+ * LightAware is class that given an FFT algorithm, take data from ADC 
+ * and send it to the algorithm. 
+ * 
+ * @param algorithm
+ * @param adc_init
+ */
 class light_aware {
 public:
  
@@ -52,37 +62,77 @@ public:
      * Says the current light intensity
      * @return light intensity
      */
-    unsigned short lightLevel();
+    double lightLevel();
     
 protected:
     
+    /**
+     * Thread that push adc value to the queue
+     * @return 
+     */
     void *pushADCValue();
     
+    /**
+     * Thread that reads adc samples from queue
+     * and send it to the algorithm
+     * @return 
+     */
     void *popToFFT();
-    
+   
+    /**
+     * Thread that push adc value to the queue
+     * with the timer library
+     * @return 
+     */
     void *pushADCValueWithTimer();
     
+    /**
+     * Helper to allow pthread for pushADCValue
+     * @param context
+     * @return 
+     */
     static void *pushADCValueHelper(void *context)
     {
         return ((light_aware *)context)->pushADCValue();
     }
     
+    /**
+     * Helper to allow pthread for pushADCValueWithTimer
+     * @param context
+     * @return 
+     */
     static void *pushADCValueWithTimerHelper(void *context){
         return ((light_aware *)context)->pushADCValueWithTimer();
     }
     
+    /**
+     * Helper to allow pthread for popToFFT
+     * @param context
+     * @return 
+     */
     static void *popToFFTHelper(void *context)
     {
         return ((light_aware *)context)->popToFFT();
     }
     
-    
+    /**
+     * set the value that says if we are inside or outside 
+     * @param value
+     */
     void setIsOutside(bool value);
     
+    /**
+     * get the value that says if we are inside or outside
+     * @param value
+     */
     void getIsOutside(bool *value);
     
 private:
     
+    /**
+     * Initialize ADC 
+     * @param type
+     */
     void initADC(ADCInit::ADCInit_ type);
     
     Adc adc;

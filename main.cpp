@@ -28,6 +28,8 @@ int main()
     
     for(;;){
         
+        printf("light level: %g\n", light_awareness.lightLevel());
+        
         if(light_awareness.isOutdoor()){
             printf("outside\n");
             led1::low();

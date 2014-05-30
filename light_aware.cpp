@@ -120,6 +120,11 @@ void light_aware::setIsOutside(bool value){
     pthread_mutex_lock(&mutexIsOutside);
     isOutside = value;
     pthread_mutex_unlock(&mutexIsOutside);
+    
+    //if(prec != value){
+        //call
+        //prec = value;
+    //}
 }
 
 void light_aware::getIsOutside(bool *value){
@@ -138,4 +143,28 @@ bool light_aware::isOutdoor(){
     pthread_mutex_unlock(&mutexIsOutside);
     
     return temp;
+}
+
+double light_aware::lightLevel(){
+    
+    queue<double>* temp = new queue<double>() ;
+    double avg = 0;
+    int size = temp->size();
+    
+    
+    pthread_mutex_lock(&mutexQueue);
+    *temp = Queue;
+    pthread_mutex_unlock(&mutexQueue);
+    
+    while(temp->empty()){
+        avg = temp->front();
+        temp->pop();
+    }
+    
+    //avg = avg / (double)size;
+    
+    delete temp;
+    
+    return avg;
+    
 }
