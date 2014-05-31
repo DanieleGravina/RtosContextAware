@@ -4,10 +4,12 @@ light_aware::light_aware(SignalProcessing& algorithm, ADCInit::ADCInit_ adc_init
         adc(1), _algorithm(algorithm), SAMPLES(algorithm.getNumOfSamples()),
         frequency(algorithm.getSampleFrequency()),
         isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
-        mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER)
+        mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER),
+        firstTime(true), avg(0)
 { 
     
     a_samples = new double[SAMPLES];
+    initADC(adc_init);
 }
 
 light_aware::~light_aware(){
@@ -53,6 +55,7 @@ void light_aware::initADC(ADCInit::ADCInit_ type){
 void *light_aware::popToFFT(void){
     
     unsigned int samples = 0;
+    double acc = 0;
     
     for(;;){
         
@@ -65,18 +68,20 @@ void *light_aware::popToFFT(void){
          
          pthread_mutex_unlock(&mutexQueue);
          
+         acc += a_samples[samples];
+         
          samples++;
     
          if(samples == SAMPLES){
-             
              
              if(_algorithm.ProcessData(a_samples, SAMPLES))
                  setIsOutside(false);
              else
                  setIsOutside(true);
       
-                  
+             avg = acc/(double)SAMPLES;    
              
+             acc = 0;
              samples = 0;
          }
     }
@@ -113,6 +118,8 @@ void *light_aware::pushADCValueWithTimer(){
     //TODO not implemented
     printf("Error: push adc value with timer library not implemented\n");
     pushADCValue();
+    
+    return 0;
 }
 
 void light_aware::setIsOutside(bool value){
@@ -121,10 +128,15 @@ void light_aware::setIsOutside(bool value){
     isOutside = value;
     pthread_mutex_unlock(&mutexIsOutside);
     
-    //if(prec != value){
-        //call
-        //prec = value;
-    //}
+    if(firstTime){
+        prec = value;
+        firstTime = false;
+    }
+    
+    if(prec != value){
+        //call(value)
+        prec = value;
+    }
 }
 
 void light_aware::getIsOutside(bool *value){
@@ -146,25 +158,5 @@ bool light_aware::isOutdoor(){
 }
 
 double light_aware::lightLevel(){
-    
-    queue<double>* temp = new queue<double>() ;
-    double avg = 0;
-    int size = temp->size();
-    
-    
-    pthread_mutex_lock(&mutexQueue);
-    *temp = Queue;
-    pthread_mutex_unlock(&mutexQueue);
-    
-    while(temp->empty()){
-        avg = temp->front();
-        temp->pop();
-    }
-    
-    //avg = avg / (double)size;
-    
-    delete temp;
-    
     return avg;
-    
 }

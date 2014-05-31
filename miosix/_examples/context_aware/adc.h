@@ -257,8 +257,7 @@ public :
      * initStatus = 1000000
      */
     void resolution(Resolution::Resolution_ res){
-        //initStatus |= (uint8_t)64;
-        initStatus++;
+        initStatus |= 1 << 6;
         _resolution = res;
     }
     
@@ -269,7 +268,7 @@ public :
      * @param scanConvMode
      */
     void scanConvMode(FunctionalState scanConversionMode){
-        initStatus++;
+        initStatus |= 1 << 5;
         _scanConvMode = scanConversionMode;
     }
     
@@ -278,6 +277,7 @@ public :
      * @param continuosConversionMode
      */
     void continuousConvMode(FunctionalState continuosConversionMode){
+        initStatus |= 1 << 4;
         initStatus++;
         _continuosConvMode = continuosConversionMode;
     }
@@ -287,7 +287,7 @@ public :
      * @param externalConversionEdge
      */
     void externalTrigConvEdge(ExternalConvEdge::Edge_ externalConversionEdge){
-        initStatus++;
+        initStatus |= 1 << 3;
         _externalConvEdge = externalConversionEdge;
     }
     
@@ -296,7 +296,7 @@ public :
      * @param externalTrigger
      */
     void externalTrigConv(ExternalTrigConv::Trigger_ externalTrigger){
-        initStatus++;
+        initStatus |= 1 << 2;
         _trigger = externalTrigger;
     }          
     
@@ -305,7 +305,7 @@ public :
      * @param alignment
      */
     void dataAlign(DataAlign::Alignment_ alignment){
-        initStatus++;
+        initStatus |= 1 << 1;
         _align = alignment;
     }
     
@@ -314,7 +314,7 @@ public :
      * @param nbrOfConversion
      */
     void nbrOfConversion(uint8_t numberOfConversion){
-        initStatus++;
+        initStatus |= 1;
         _nbrOfConversion = numberOfConversion;
     }
     
@@ -326,7 +326,9 @@ public :
         /**
          * if not initiliazed, use default setting
          */
-        if(initStatus != 7){
+        printf("initStatus: %d", initStatus);
+        
+        if(initStatus != 127){
             scanConvMode(DISABLE);
             continuousConvMode(DISABLE);
             externalTrigConv(ExternalTrigConv::T1_CC1);
@@ -334,6 +336,7 @@ public :
             resolution(Resolution::RES_12);
             dataAlign(DataAlign::Right);
             nbrOfConversion(1);
+            initStatus = 0;
         }
             
         deInit();

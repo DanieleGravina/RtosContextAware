@@ -41,6 +41,8 @@ int main()
             led1::high();
             led2::low();
         }
+        
+        usleep(25*100*512);
     }
            
     

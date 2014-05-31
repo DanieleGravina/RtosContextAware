@@ -149,14 +149,20 @@ private:
     queue<double> Queue;
     
     bool isOutside;
+    bool prec;
+    bool firstTime;
     
     pthread_mutex_t mutexQueue;
     
     pthread_mutex_t mutexIsOutside;
     
+    pthread_mutex_t mutexAVG;
+    
     pthread_cond_t cond; 
     
     double *a_samples;
+    
+    double avg;
     
     const light_aware& operator= ( const light_aware& other );
         
