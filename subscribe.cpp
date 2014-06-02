@@ -42,23 +42,62 @@ void subscribe::change(bool y){
 
 }
 
-void subscribe::addFunction(function_pointer f){
-    subscribe::v.push_back(f);
-}
-void subscribe::removeFunction(function_pointer f){
-    vector <function_pointer> v= subscribe::getV();
-    vector <function_pointer>::iterator i = v.begin();
-    int pos;
-    
-   // i= find(v.begin(),v.end(),f);
-    pos= distance(v.begin(), i);
-    
-    //v.erese(pos);
-    
-}
+//void subscribe::addFunction(function_pointer f){
+//    subscribe::clients.push_back(f);
+//}
+//void subscribe::removeFunction(function_pointer f){
+//    subscribe::clients.remove(f);
+//    
+//}
 
 void subscribe::handler(TRIGGER_rule::rules r){
 
 }
 
+
+bool subscribe::record(TRIGGER_rule::rules x, function_pointer f){
+    if(x == TRIGGER_rule::IN_OUT){
+        subscribe::getClientsINOUT().push_back(f);
+        return true;
+    }
+    if((x == TRIGGER_rule::OUT_IN)){
+        subscribe::getClientsOUTIN().push_back(f);
+        return true;
+    }
+    return false;
+    
+}
+
+ TRIGGER_rule::rules subscribe::getTrans(){
+    return subscribe::trans;
+ 
+ }
+
+ bool subscribe::unrecord(function_pointer f){
+     bool flag=false;
+     std::list<function_pointer>::iterator it;
+     
+     //iterator to begin
+     it= subscribe::getClientsINOUT().begin();
+     while(it !=subscribe::getClientsINOUT().end()){
+         if(*it == f){
+             subscribe::getClientsINOUT().erase(it);
+             flag=true;
+         }
+         it++;
+     }
+     //iterator to begin
+     it=subscribe::getClientsOUTIN().begin();
+     while(it !=subscribe::getClientsOUTIN().end()){
+         if(*it == f){
+             subscribe::getClientsOUTIN().erase(it);
+             flag=true;
+         }
+         it++;
+     }
+     
+     return flag;
+ 
+ 
+ }
 

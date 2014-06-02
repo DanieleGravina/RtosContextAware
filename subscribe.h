@@ -9,6 +9,7 @@
 #define	SUBSCRIBE_H
 
 #include <vector>
+#include <list>
 #include "miosix/miosix.h"
 
 using namespace std;
@@ -44,17 +45,26 @@ public:
      @return status of register*/
 
     bool record(TRIGGER_rule::rules x, function_pointer);
+    
+    /**
+     Deallocate a subscription
+     @param pointer to function
+     @return true if the element is found and deleted otherwise false*/
+    bool unrecord(function_pointer);
+    
     /**
      Called by light_aware manager when occurred a transaction of environment
-     @parma toggle variable*/
+     @param toggle variable*/
     void change (bool y);
     
     void setState(bool x);
     bool getState();
-    
-    vector<function_pointer> getV();
-    
+   
+    std::list<function_pointer> getClientsINOUT();
+    std::list<function_pointer> getClientsOUTIN();
+
     void setTrans(TRIGGER_rule::rules x);
+    
     TRIGGER_rule::rules getTrans();
     
     void addFunction(function_pointer f);
@@ -63,12 +73,14 @@ public:
     /**
     */
     void handler(TRIGGER_rule::rules x);
- 
+    
  
 private:
     bool state;
     TRIGGER_rule::rules trans;
-    std::vector<function_pointer> v;    
+    std::list<function_pointer> clients_INOUT;
+    std::list<function_pointer> clients_OUTIN;    
+
 };
 
 #endif	/* SUBSCRIBE_H */
