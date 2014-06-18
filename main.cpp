@@ -6,6 +6,7 @@
 #include <goertzel_algorithm.h>
 #include <complex.h>
 #include <miosix/_examples/context_aware/adc.h>
+#include "subscribe.h"
 
 using namespace std;
 using namespace miosix;
@@ -21,7 +22,8 @@ typedef Gpio<GPIOB_BASE,0> adcIn;
 int main()
 {
     FFTAlgorithm algorithm;
-    light_aware light_awareness(algorithm, ADCInit::NO_TIMER);
+    subscribe sub;
+    light_aware light_awareness(algorithm, ADCInit::NO_TIMER, sub);
     
     led1::mode(Mode::OUTPUT);
     led2::mode(Mode::OUTPUT);

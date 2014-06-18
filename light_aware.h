@@ -15,6 +15,7 @@
 #include <inttypes.h>
 #include <SignalProcessingAlgorithm.h>
 #include <FFTAlgorithm.h>
+#include <subscribe.h>
 
 using namespace std;
 using namespace miosix;
@@ -48,7 +49,7 @@ private:
 class light_aware {
 public:
  
-    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init);
+    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init, subscribe& sub);
     
     ~light_aware();
     
@@ -163,6 +164,8 @@ private:
     double *a_samples;
     
     double avg;
+    
+    subscribe& _sub;
     
     const light_aware& operator= ( const light_aware& other );
         

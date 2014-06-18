@@ -1,11 +1,11 @@
 #include <light_aware.h>
 
-light_aware::light_aware(SignalProcessing& algorithm, ADCInit::ADCInit_ adc_init):
+light_aware::light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init, subscribe& sub):
         adc(1), _algorithm(algorithm), SAMPLES(algorithm.getNumOfSamples()),
         frequency(algorithm.getSampleFrequency()),
         isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
         mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER),
-        firstTime(true), avg(0)
+        firstTime(true), avg(0), _sub(sub)
 { 
     
     a_samples = new double[SAMPLES];
@@ -134,7 +134,7 @@ void light_aware::setIsOutside(bool value){
     }
     
     if(prec != value){
-        //call(value)
+        _sub.change(value);
         prec = value;
     }
 }
