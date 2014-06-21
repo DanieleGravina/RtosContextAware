@@ -20,7 +20,8 @@ fft.cpp                                 \
 complex.cpp                             \
 light_aware.cpp                         \
 FFTAlgorithm.cpp			\
-goertzel_algorithm.cpp
+goertzel_algorithm.cpp			\
+subscribe.cpp
 
 ##
 ## List here additional static libraries with relative path
