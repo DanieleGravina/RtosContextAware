@@ -11,6 +11,7 @@
 #include <vector>
 #include <list>
 #include "miosix/miosix.h"
+#include <pthread.h>
 
 using namespace std;
 using namespace miosix;
@@ -35,7 +36,6 @@ private:
 class subscribe {
 public:
     subscribe();
-    subscribe(const subscribe& orig);
     virtual ~subscribe();
     
     /**
@@ -70,16 +70,27 @@ public:
     void addFunction(function_pointer f);
     void removeFunction(function_pointer f);
     
-    /**
-    */
-    void handler(TRIGGER_rule::rules x);
+    
     
  
 private:
     bool state;
     TRIGGER_rule::rules trans;
     std::list<function_pointer> clients_INOUT;
-    std::list<function_pointer> clients_OUTIN;    
+    std::list<function_pointer> clients_OUTIN; 
+    pthread_t t1;
+
+    
+    
+protected:
+    /**
+    */
+   void *handler();
+    
+   static void *handler_helper(void *context){
+       
+        return ((subscribe *)context)->handler();
+   }
 
 };
 
