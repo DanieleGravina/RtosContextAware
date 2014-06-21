@@ -326,7 +326,6 @@ public :
         /**
          * if not initiliazed, use default setting
          */
-        printf("initStatus: %d", initStatus);
         
         if(initStatus != 127){
             scanConvMode(DISABLE);
