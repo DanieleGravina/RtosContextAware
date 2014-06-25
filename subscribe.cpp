@@ -8,7 +8,7 @@
 #include "subscribe.h"
 
 subscribe::subscribe() {
-
+   
 }
 
 
@@ -62,9 +62,6 @@ void subscribe::change(bool y) {
     if( (subscribe::getClientsINOUT().size() + subscribe::getClientsOUTIN().size()) != 0)
         pthread_create( &t1, NULL, &subscribe::handler_helper, NULL);
     
-                
-    
-
 }
 
 //void subscribe::addFunction(function_pointer f){
@@ -100,14 +97,20 @@ void *subscribe::handler() {
     return 0;
 }
 
-bool subscribe::record(TRIGGER_rule::rules x, function_pointer f) {
+bool subscribe::record(TRIGGER_rule::rules x, function_pointer f) {    
+ 
+    void (*foo)();
+    
+    foo = *f;
+   
+    
     if (x == TRIGGER_rule::IN_OUT) {
-        subscribe::getClientsINOUT().push_back(f);
+         foo();
+        subscribe::clients_INOUT.push_back(*f);
         return true;
     }
     if ((x == TRIGGER_rule::OUT_IN)) {
-        subscribe::getClientsOUTIN().push_back(f);
-
+        subscribe::clients_OUTIN.push_back(*f);
         return true;
     }
     return false;
@@ -117,26 +120,26 @@ bool subscribe::record(TRIGGER_rule::rules x, function_pointer f) {
 bool subscribe::unrecord(function_pointer f) {
     bool flag = false;
     std::list<function_pointer>::iterator it;
-
-    //iterator to begin
-    it = subscribe::getClientsINOUT().begin();
-    while (it != subscribe::getClientsINOUT().end()) {
-        if (*it == f) {
-            subscribe::getClientsINOUT().erase(it);
+        
+    for(it = subscribe::clients_INOUT.begin();it != subscribe::clients_INOUT.end();){//do{
+         
+          if(*it == *f) {
+            it=subscribe::clients_INOUT.erase(it);
             flag = true;
-        }
-        it++;
-
-    }
-    //iterator to begin
-    it = subscribe::getClientsOUTIN().begin();
-    while (it != subscribe::getClientsOUTIN().end()) {
-        if (*it == f) {
-            subscribe::getClientsOUTIN().erase(it);
+          }
+          else
+                ++it;
+     }
+    
+    for(it = subscribe::clients_OUTIN.begin();it != subscribe::clients_OUTIN.end();){
+          if(*it == *f) {
+            it=subscribe::clients_OUTIN.erase(it);
             flag = true;
-        }
-        it++;
-    }
+          }
+          else
+                ++it;
+     }
+    
 
     return flag;
 
