@@ -18,23 +18,6 @@
 using namespace std;
 using namespace miosix;
 
-//typedef void (*function_pointer)();
-
-/*
- * Trigger rules used to get which kind of transaction we had
- * */
-
-//class TRIGGER_rule{
-//public:
-//    enum rules
-//    {
-//        IN_OUT,
-//        OUT_IN 
-//    };
-//private:
-//    TRIGGER_rule();
-//};
-
 class subscribe_light_aware : public subscribe{
 public:
     subscribe_light_aware();
