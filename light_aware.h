@@ -16,6 +16,7 @@
 #include <SignalProcessingAlgorithm.h>
 #include <FFTAlgorithm.h>
 #include <subscribe.h>
+#include "context_aware.h"
 
 using namespace std;
 using namespace miosix;
@@ -46,10 +47,10 @@ private:
  * @param algorithm
  * @param adc_init
  */
-class light_aware {
+class light_aware : ContextAware{
 public:
  
-    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init, subscribe& sub);
+    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init);
     
     ~light_aware();
     
@@ -63,7 +64,7 @@ public:
      * Says the current light intensity
      * @return light intensity
      */
-    double lightLevel();
+    virtual double getMeasure();
     
 protected:
     
@@ -164,8 +165,6 @@ private:
     double *a_samples;
     
     double avg;
-    
-    subscribe& _sub;
     
     const light_aware& operator= ( const light_aware& other );
         
