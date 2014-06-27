@@ -13,6 +13,7 @@
 #include "miosix/miosix.h"
 #include <pthread.h>
 #include <subscribe.h>
+#include <cstdio>
 
 using namespace std;
 using namespace miosix;
@@ -80,8 +81,11 @@ private:
     std::list<function_pointer> clients_INOUT;
     std::list<function_pointer> clients_OUTIN; 
     pthread_t t1;
-
+    bool firstCall;
     
+    pthread_mutex_t mutexList;
+    pthread_mutex_t mutexHandler;
+
     
 protected:
     /**

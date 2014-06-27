@@ -7,8 +7,10 @@
 
 #include "subscribe_light_aware.h"
 
-subscribe_light_aware::subscribe_light_aware() {
-   
+subscribe_light_aware::subscribe_light_aware():
+                mutexHandler(PTHREAD_MUTEX_INITIALIZER), mutexList(PTHREAD_MUTEX_INITIALIZER) 
+{
+  
 }
 
 
@@ -43,18 +45,16 @@ return subscribe_light_aware::clients_OUTIN;
 //------------------------------------------------------------------------
 
 void subscribe_light_aware::change(bool y) {
-    static bool firstCall = false;
+    subscribe_light_aware::firstCall=false;
     
-    void (*foo)();
+ 
     
-    foo = *(subscribe_light_aware::getClientsINOUT().front());
-    foo();
     
     bool preState = subscribe_light_aware::getState();
     subscribe_light_aware::setState(y);
 
-    if (!firstCall)
-        firstCall = true;
+    if (!subscribe_light_aware::firstCall)
+        subscribe_light_aware::firstCall = true;
     else {
         if (preState == false && subscribe_light_aware::getState() == true)
             subscribe_light_aware::setTrans(TRIGGER_rule::IN_OUT);
@@ -62,9 +62,12 @@ void subscribe_light_aware::change(bool y) {
             subscribe_light_aware::setTrans(TRIGGER_rule::OUT_IN);
 
     }
-    
-    if( (subscribe_light_aware::clients_INOUT.size() + subscribe_light_aware::clients_OUTIN.size()) != 0)
-        pthread_create( &t1, NULL, &subscribe_light_aware::handler_helper, NULL);
+    printf("\nChange\n");
+    if( (subscribe_light_aware::clients_INOUT.size() + subscribe_light_aware::clients_OUTIN.size()) != 0){
+        printf("\nPPPPPPPPPPPPPPPP\n");
+        //pthread_create( &t1, NULL, &subscribe_light_aware::handler_helper, NULL);
+        handler();
+    }
     
 }
 
@@ -79,14 +82,17 @@ void subscribe_light_aware::change(bool y) {
 void *subscribe_light_aware::handler() {
     std::list<function_pointer>::iterator it;
     void (*foo)();
-
+    
+    //pthread_mutex_lock(&mutexList);
+    printf("\nhandler\n");
+ 
     if (subscribe_light_aware::getTrans() == TRIGGER_rule::IN_OUT) {
-        it = subscribe_light_aware::clients_INOUT.begin();
-        
-        for(it = subscribe_light_aware::clients_INOUT.begin();it != subscribe_light_aware::clients_INOUT.end();){//do{
+        printf("in out\n");
+        //it = subscribe_light_aware::clients_INOUT.begin();
+        for(it = clients_INOUT.begin();it != clients_INOUT.end(); ++it){
+            printf("in for\n");
             foo = (*it);
             foo();
-            ++it;
         }
     }
     
@@ -100,24 +106,29 @@ void *subscribe_light_aware::handler() {
             ++it;
         }
     }
+     //pthread_mutex_unlock(&mutexList);
     return 0;
 }
 
 bool subscribe_light_aware::record(TRIGGER_rule::rules x, function_pointer f) {    
  
-//    void (*foo)();
-//    
-//    foo = *f;
-//    foo();
+//delete
+    void (*foo)();
+    foo = f;
+    //foo();
     
+    pthread_mutex_lock(&mutexList);
+
     if (x == TRIGGER_rule::IN_OUT) {
-        subscribe_light_aware::clients_INOUT.push_back(*f);
+        subscribe_light_aware::clients_INOUT.push_back(f);
         return true;
     }
     if ((x == TRIGGER_rule::OUT_IN)) {
-        subscribe_light_aware::clients_OUTIN.push_back(*f);
+        subscribe_light_aware::clients_OUTIN.push_back(f);
         return true;
     }
+    pthread_mutex_unlock(&mutexList);
+
     return false;
 
 }
@@ -125,10 +136,11 @@ bool subscribe_light_aware::record(TRIGGER_rule::rules x, function_pointer f) {
 bool subscribe_light_aware::unrecord(function_pointer f) {
     bool flag = false;
     std::list<function_pointer>::iterator it;
-        
+    
+    pthread_mutex_lock(&mutexList);
     for(it = subscribe_light_aware::clients_INOUT.begin();it != subscribe_light_aware::clients_INOUT.end();){//do{
          
-          if(*it == *f) {
+          if(*it == f) {
             it= subscribe_light_aware::clients_INOUT.erase(it);
             flag= true; 
           }
@@ -137,15 +149,14 @@ bool subscribe_light_aware::unrecord(function_pointer f) {
      }
     
     for(it = subscribe_light_aware::clients_OUTIN.begin();it != subscribe_light_aware::clients_OUTIN.end();){
-          if(*it == *f) {
+          if(*it == f) {
             it= subscribe_light_aware::clients_OUTIN.erase(it);
             flag = true;
           }
           else
                 ++it;
      }
-    
-
+     pthread_mutex_unlock(&mutexList);
     return flag;
 
 }
