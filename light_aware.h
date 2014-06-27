@@ -47,10 +47,10 @@ private:
  * @param algorithm
  * @param adc_init
  */
-class light_aware : ContextAware{
+class light_aware : public ContextAware{
 public:
  
-    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init);
+    light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init, subscribe& sub);
     
     ~light_aware();
     

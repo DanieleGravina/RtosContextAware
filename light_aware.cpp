@@ -157,6 +157,6 @@ bool light_aware::isOutdoor(){
     return temp;
 }
 
-double light_aware::getMeasure{
+double light_aware::getMeasure(){
     return avg;
 }

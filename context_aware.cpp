@@ -1,7 +1,6 @@
 #include "context_aware.h"
         
-ContextAware::ContextAware(subscribe& sub){
-    _sub = sub;
+ContextAware::ContextAware(subscribe& sub) : _sub(sub){
 }
 
 ContextAware::~ContextAware(){
