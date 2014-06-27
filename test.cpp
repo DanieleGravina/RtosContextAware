@@ -1,36 +1,33 @@
+#include "test.h"
+
+void foo(){
+    printf("in-out");
+}
+
+void foo2(){
+    printf("out-in");
+}
 
 
-#include "miosix.h"
-#include "light_aware.h"
-#include <fft.h>
-#include <goertzel_algorithm.h>
-#include <complex.h>
-#include <miosix/_examples/context_aware/adc.h>
-#include "subscribe.h"
-
-using namespace std;
-using namespace miosix;
-
-typedef Gpio<GPIOD_BASE,14> led1;
-typedef Gpio<GPIOD_BASE,15> led2;
-
-typedef Gpio<GPIOC_BASE,0> led3;
-
-typedef Gpio<GPIOB_BASE,0> adcIn;
-
-
-int main()
+int test()
 {
     FFTAlgorithm algorithm;
-    subscribe sub;
+    subscribe_light_aware sub;
+    
     light_aware light_awareness(algorithm, ADCInit::NO_TIMER, sub);
+    
+    light_awareness.registration(TRIGGER_rule::IN_OUT, &foo);
+    light_awareness.registration(TRIGGER_rule::OUT_IN, &foo2);
+    
+    light_awareness.unregistration(&foo2);
     
     led1::mode(Mode::OUTPUT);
     led2::mode(Mode::OUTPUT);
     
+    
     for(;;){
         
-        printf("light level: %g\n", light_awareness.lightLevel());
+        printf("light level: %g\n", light_awareness.getMeasure());
         
         if(light_awareness.isOutdoor()){
             printf("outside\n");
@@ -45,7 +42,9 @@ int main()
         }
         
         usleep(25*100*512);
+     
     }
            
     
 }
+
