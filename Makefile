@@ -15,13 +15,18 @@ SUBDIRS := miosix
 ##
 SRC :=                                  \
 main.cpp                                \
+test.cpp                                \
 miosix/_examples/context_aware/adc.cpp  \
 fft.cpp                                 \
 complex.cpp                             \
 light_aware.cpp                         \
 FFTAlgorithm.cpp			\
 goertzel_algorithm.cpp                  \
-subscribe.cpp                 
+subscribe_light_aware.cpp               \
+context_aware.cpp                       \
+UserInterface.cpp                       \
+Proprieta.cpp
+
 
 ##
 ## List here additional static libraries with relative path
