@@ -5,38 +5,39 @@
  * Created on May 30, 2014, 11:40 AM
  */
 
-#ifndef SUBSCRIBE_H
-#define	SUBSCRIBE_H
+#ifndef SUBSCRIBE_LIGHT_AWARE_H
+#define	SUBSCRIBE_LIGHT_AWARE_H
 
 #include <vector>
 #include <list>
 #include "miosix/miosix.h"
 #include <pthread.h>
+#include <subscribe.h>
 
 using namespace std;
 using namespace miosix;
 
-typedef void (*function_pointer)();
+//typedef void (*function_pointer)();
 
 /*
  * Trigger rules used to get which kind of transaction we had
  * */
 
-class TRIGGER_rule{
-public:
-    enum rules
-    {
-        IN_OUT,
-        OUT_IN 
-    };
-private:
-    TRIGGER_rule();
-};
+//class TRIGGER_rule{
+//public:
+//    enum rules
+//    {
+//        IN_OUT,
+//        OUT_IN 
+//    };
+//private:
+//    TRIGGER_rule();
+//};
 
-class subscribe {
+class subscribe_light_aware : public subscribe{
 public:
-    subscribe();
-    virtual ~subscribe();
+    subscribe_light_aware();
+    virtual ~subscribe_light_aware();
     
     /**
      Allows user to register own function to an change event
@@ -89,8 +90,9 @@ protected:
     
    static void *handler_helper(void *context){
        
-        return ((subscribe *)context)->handler();
+        return ((subscribe_light_aware *)context)->handler();
    }
+
 
 };
 
