@@ -5,7 +5,7 @@ light_aware::light_aware(SignalProcessing &algorithm, ADCInit::ADCInit_ adc_init
         frequency(algorithm.getSampleFrequency()),
         isOutside(false), mutexQueue(PTHREAD_MUTEX_INITIALIZER),
         mutexIsOutside(PTHREAD_MUTEX_INITIALIZER), cond(PTHREAD_COND_INITIALIZER),
-        firstTime(true), avg(0), _sub(sub)
+        firstTime(true), avg(0), ContextAware(sub)
 { 
     
     a_samples = new double[SAMPLES];
@@ -157,6 +157,6 @@ bool light_aware::isOutdoor(){
     return temp;
 }
 
-double light_aware::lightLevel(){
+double light_aware::getMeasure{
     return avg;
 }
