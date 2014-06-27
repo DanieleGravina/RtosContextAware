@@ -75,7 +75,7 @@ public:
     
  
 private:
-    bool state;
+    bool state=false;
     TRIGGER_rule::rules trans;
     std::list<function_pointer> clients_INOUT;
     std::list<function_pointer> clients_OUTIN; 
