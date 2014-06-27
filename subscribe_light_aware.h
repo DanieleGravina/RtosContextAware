@@ -8,7 +8,6 @@
 #ifndef SUBSCRIBE_LIGHT_AWARE_H
 #define	SUBSCRIBE_LIGHT_AWARE_H
 
-#include <vector>
 #include <list>
 #include "miosix/miosix.h"
 #include <pthread.h>
@@ -18,6 +17,13 @@
 using namespace std;
 using namespace miosix;
 
+
+/**
+ *Implementation of subscribe class for light context aware. Here we have the 
+ * methods and structures to manage the changes about the environment, refers to 
+ * light
+ * 
+ */
 class subscribe_light_aware : public subscribe{
 public:
     subscribe_light_aware();
@@ -47,17 +53,11 @@ public:
    
     std::list<function_pointer> getClientsINOUT();
     std::list<function_pointer> getClientsOUTIN();
-
+    
+    
     void setTrans(TRIGGER_rule::rules x);
     
     TRIGGER_rule::rules getTrans();
-    
-    void addFunction(function_pointer f);
-    void removeFunction(function_pointer f);
-    
-    
-    
- 
 private:
     bool state=false;
     TRIGGER_rule::rules trans;
@@ -65,7 +65,6 @@ private:
     std::list<function_pointer> clients_OUTIN; 
     pthread_t t1;
     bool firstCall;
-    
     pthread_mutex_t mutexList;
     pthread_mutex_t mutexHandler;
 

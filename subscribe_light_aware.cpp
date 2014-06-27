@@ -112,7 +112,7 @@ bool subscribe_light_aware::unrecord(function_pointer f) {
     std::list<function_pointer>::iterator it;
 
     //pthread_mutex_lock(&mutexList);
-    for (it = subscribe_light_aware::clients_INOUT.begin(); it != subscribe_light_aware::clients_INOUT.end();) {//do{
+    for (it = subscribe_light_aware::clients_INOUT.begin(); it != subscribe_light_aware::clients_INOUT.end();) {
 
         if (*it == f) {
             it = subscribe_light_aware::clients_INOUT.erase(it);
