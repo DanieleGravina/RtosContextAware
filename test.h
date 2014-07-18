@@ -21,9 +21,8 @@ using namespace miosix;
 
 /**
  * Test file to show how to use subscription with context aware
- * @return 
  */
-int test();
+void test();
 
 
 
