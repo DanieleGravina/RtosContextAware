@@ -21,7 +21,9 @@ complex.cpp                             \
 light_aware.cpp                         \
 FFTAlgorithm.cpp			\
 goertzel_algorithm.cpp                  \
-subscribe.cpp                 
+subscribe_light_aware.cpp               \
+context_aware.cpp                       \
+test.cpp          
 
 ##
 ## List here additional static libraries with relative path
